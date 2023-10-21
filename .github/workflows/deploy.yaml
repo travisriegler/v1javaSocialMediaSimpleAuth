@@ -1,0 +1,57 @@
+# File path: .github/workflows/dev.yml
+
+name: Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  id-token: write   # This is required for requesting the JWT
+  contents: read    # This is required for actions/checkout
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up JDK
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+          maven-version: '3.9.4'
+
+
+
+      - name: Build with Maven
+        run: mvn clean test
+
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          push: true
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/v1test:${{ github.run_number }},
+            ${{ secrets.DOCKERHUB_USERNAME }}/v1test:latest
+
+      - name: configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          role-to-assume: arn:aws:iam::881990811866:role/Github_Actions_Full_EC2_Access
+          role-session-name: samplerolesession
+          aws-region: "us-east-1"
