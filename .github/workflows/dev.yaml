@@ -1,0 +1,46 @@
+# File path: .github/workflows/dev.yml
+
+name: Dev
+
+on:
+  push:
+    branches:
+      - dev
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Install Amazon Corretto 17
+        run: |
+          wget -O- https://no-cache.download.oracle.com/java/GA/jdk17/0d483333a00540d886896bac774ff48b/35/GPL/openjdk-17_linux-x64_bin.tar.gz | tar xz -C /usr/local/
+          echo "/usr/local/jdk-17/bin" >> $GITHUB_PATH
+
+      - name: Install Maven 3.9.4
+        run: |
+          wget -q https://downloads.apache.org/maven/maven-3/3.9.4/binaries/apache-maven-3.9.4-bin.tar.gz
+          tar -xzf apache-maven-3.9.4-bin.tar.gz -C /usr/local
+          echo "/usr/local/apache-maven-3.9.4/bin" >> $GITHUB_PATH
+
+      - name: Build with Maven
+        run: mvn clean test
+
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/v1test:dev${{ github.run_number }}
