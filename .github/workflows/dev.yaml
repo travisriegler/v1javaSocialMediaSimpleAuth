@@ -19,12 +19,9 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: '17'
+          maven-version: '3.9.4'
 
-      - name: Install Maven 3.9.4
-        run: |
-          wget -q https://downloads.apache.org/maven/maven-3/3.9.4/binaries/apache-maven-3.9.4-bin.tar.gz
-          tar -xzf apache-maven-3.9.4-bin.tar.gz -C /usr/local
-          echo "/usr/local/apache-maven-3.9.4/bin" >> $GITHUB_PATH
+
 
       - name: Build with Maven
         run: mvn clean test
