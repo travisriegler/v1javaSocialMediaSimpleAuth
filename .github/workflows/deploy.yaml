@@ -55,3 +55,12 @@ jobs:
           role-to-assume: arn:aws:iam::881990811866:role/Github_Actions_Full_EC2_Access
           role-session-name: samplerolesession
           aws-region: "us-east-1"
+      - name: Trigger AWS Systems Manager Run Command
+        run: |
+          aws ssm send-command \
+            --document-name "Update_docker_image_on_EC2" \
+            --targets '[{"Key":"InstanceIds","Values":["i-07096e0c2883154eb"]}]' \
+            --timeout-seconds 600 \
+            --max-concurrency "50" \
+            --max-errors "0" \
+            --region "us-east-1"
