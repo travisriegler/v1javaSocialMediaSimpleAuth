@@ -14,10 +14,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Install Amazon Corretto 17
-        run: |
-          wget -O- https://no-cache.download.oracle.com/java/GA/jdk17/0d483333a00540d886896bac774ff48b/35/GPL/openjdk-17_linux-x64_bin.tar.gz | tar xz -C /usr/local/
-          echo "/usr/local/jdk-17/bin" >> $GITHUB_PATH
+      - name: Set up JDK
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'zulu'
+          java-version: '17'
 
       - name: Install Maven 3.9.4
         run: |
