@@ -9,6 +9,6 @@ public class TestController {
 
     @GetMapping
     public ResponseEntity<String> getTest() {
-        return ResponseEntity.ok("test complete");
+        return ResponseEntity.ok("CI/CD workflow test complete");
     }
 }
