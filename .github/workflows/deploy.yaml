@@ -58,7 +58,7 @@ jobs:
       - name: Trigger AWS Systems Manager Run Command
         run: |
           aws ssm send-command \
-            --document-name "Update_docker_image_on_EC2" \
+            --document-name "New_Version_Github_Update_Docker_Image" \
             --targets '[{"Key":"InstanceIds","Values":["i-07096e0c2883154eb"]}]' \
             --timeout-seconds 600 \
             --max-concurrency "50" \
