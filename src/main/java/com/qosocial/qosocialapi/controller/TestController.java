@@ -9,6 +9,6 @@ public class TestController {
 
     @GetMapping
     public ResponseEntity<String> getTest() {
-        return ResponseEntity.ok("CI/CD workflow test complete dfsdfsdfsdfsdf");
+        return ResponseEntity.ok("testing secrets manager and docker");
     }
 }
